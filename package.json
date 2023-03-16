@@ -13,6 +13,7 @@
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
     "chess-legal-moves": "^2.3.2",
+    "chess.js": "^1.0.0-beta.3",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
     "next": "13.2.4",

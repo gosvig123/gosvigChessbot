@@ -439,6 +439,11 @@ chess-legal-moves@^2.3.2:
   resolved "https://registry.yarnpkg.com/chess-legal-moves/-/chess-legal-moves-2.3.2.tgz#d65c2ee25382e455e0a12241fad821e9eb02246a"
   integrity sha512-9zwAZaDSPLlYRXb2TVJCvAk1E6V/Y0rTvTEoYg+U31ve+1KX+/9NQu90bRnnEP+/XL3qwBZSF1c8gAKvEbouTQ==
 
+chess.js@^1.0.0-beta.3:
+  version "1.0.0-beta.3"
+  resolved "https://registry.yarnpkg.com/chess.js/-/chess.js-1.0.0-beta.3.tgz#5a453f9d8df8f32c87480a395c9b411f080b26ab"
+  integrity sha512-zu8QVvP0BmMzrstlsrXL2LxdHfAkrtyNftVRaJXGI5mn2ZSsgTJujvZx5BVJsPMwBkRZ+omCdZkVyVLBlKn2HA==
+
 client-only@0.0.1:
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/client-only/-/client-only-0.0.1.tgz#38bba5d403c41ab150bff64a95c85013cf73bca1"

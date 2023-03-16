@@ -1,14 +1,14 @@
 /** @format */
 
 import Head from "next/head";
-import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
-import { getLegalMoves } from "../../lib/legalMoves";
 import { useEffect, useState } from "react";
+import { bestNextMoveIterative } from "../../lib/eval";
 import {
   getMyAccount,
   RequestChallenge,
+  acceptChallenge,
   getListOfBots,
   getMyGames,
   streamOfGameEvents,
@@ -16,48 +16,60 @@ import {
   streamOfSpecificGame,
 } from "../../lib/games";
 import { Challenge } from "../../types";
+import { type } from "os";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const [activeGames, setActiveGames] = useState<any>([]);
-  interface nowPlaying {
-    nowPlaying: {
-      id: string;
-      fen: string;
-    };
-  }
-  function evaluatePosition() {
-    const firstGame = activeGames["nowPlaying"][0];
-    const legalMoves = getLegalMoves(firstGame.fen)["legalMoves"];
-    let move = "";
 
-    function getMove() {
-      const numberFrom0To15 = Math.floor(Math.random() * 16);
-      if (legalMoves[numberFrom0To15].from.length > 0) {
-        if (legalMoves[numberFrom0To15].quietMoves.length > 0) {
-          move =
-            legalMoves[numberFrom0To15].from +
-            legalMoves[numberFrom0To15].quietMoves[0];
-        }
-        if (legalMoves[numberFrom0To15].killMoves.length > 0) {
-          move =
-            legalMoves[numberFrom0To15].from +
-            legalMoves[numberFrom0To15].killMoves[0];
-        }
-      }
+  const checkAndAcceptChallenge = async () => {
+    const gameEventsToCheck = await streamOfGameEvents();
+    interface Challenge {
+      type: string;
+      challenge: {
+        id: string;
+      };
     }
-
-    while (move.length === 0) {
-      getMove();
-    }
-    makeAMove(firstGame.fullId, move).then((res) => {
-      setTimeout(() => {
-        getMyGames().then((games) => {
-          setActiveGames(games);
-          console.log(games);
-        });
-      }, 1000);
+    const challenges = gameEventsToCheck.filter((event: Challenge) => {
+      return event.type === "challenge";
     });
+
+    challenges.forEach((challenge: Challenge) => {
+      return acceptChallenge(challenge.challenge.id);
+    });
+  };
+
+  function evaluatePosition() {
+    const allGames = activeGames["nowPlaying"];
+
+    interface Game {
+      fen: string;
+      fullId: string;
+      isMyTurn: boolean;
+      color: string;
+    }
+
+    allGames.forEach((game: Game) => {
+      const nextMove: any = bestNextMoveIterative(game.fen, 200, game.color);
+      const fen = game.fen;
+
+      if (game.isMyTurn) {
+        console.log("making a move", game);
+        makeAMove(game.fullId, nextMove).then((res) => {
+          setTimeout(() => {
+            getMyGames().then((games) => {
+              setActiveGames(games);
+            });
+          }, 1000);
+        });
+      }
+    });
+
+    getMyGames().then((games) => {
+      setActiveGames(games);
+    });
+
+    return;
   }
 
   return (
@@ -90,6 +102,13 @@ export default function Home() {
             }}
           >
             request challenge
+          </button>
+          <button
+            onClick={() => {
+              checkAndAcceptChallenge();
+            }}
+          >
+            Accept Challenge
           </button>
           <button onClick={getMyAccount}>Get My Account</button>
           <button onClick={getListOfBots}>Get List of Bots</button>
