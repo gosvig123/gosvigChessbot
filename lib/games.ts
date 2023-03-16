@@ -94,32 +94,38 @@ export const getMyGames = async () => {
   }
 };
 
-export const streamOfGameEvents = async (): Promise<void> => {
+export const streamOfGameEvents = async (): Promise<any> => {
   try {
     const response = await fetch("https://lichess.org/api/stream/event", {
       method: "GET",
       headers: {
         Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+        "Content-Type": "application/json",
+
+        cors: "no-cors",
       },
     });
 
     const reader = response.body?.getReader();
     let buffer = "";
+    let resArray: any = [];
     while (true) {
       const { done, value } = await reader!.read();
       if (done) break;
       buffer += new TextDecoder().decode(value!);
       const lines = buffer.split("\n");
       buffer = lines.pop()!;
-      lines.forEach((line) => {
+      for (let i = 0; i < lines.length; i++) {
         try {
-          const data = JSON.parse(line);
+          const data = JSON.parse(lines[i]);
           console.log(data);
-          return data;
+          resArray.push(data); // This will only return the first object
         } catch (error) {
           console.error(error);
         }
-      });
+      }
+
+      return resArray;
     }
   } catch (error) {
     console.error(error);
@@ -128,6 +134,7 @@ export const streamOfGameEvents = async (): Promise<void> => {
 
 export const makeAMove = async (gameId: string, move: string) => {
   try {
+    console.log(gameId, move);
     const myMove = await fetch(
       `https://lichess.org/api/bot/game/${gameId}/move/${move}`,
       {
@@ -159,6 +166,22 @@ export const streamOfSpecificGame = async (gameId: string) => {
       .then((res) => res.json())
       .then((data) => data);
     return myGame;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const acceptChallenge = async (challengeId: string) => {
+  try {
+    const challengeAccepted = await fetch(
+      `https://lichess.org/api/challenge/${challengeId}/accept`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+        },
+      }
+    );
   } catch (error) {
     console.error(error);
   }
