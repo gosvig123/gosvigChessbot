@@ -39,8 +39,8 @@ export default function Home() {
     });
   };
 
-  function evaluatePosition() {
-    const allGames = activeGames["nowPlaying"];
+  async function evaluatePosition() {
+    const allGames: any = await myActiveGames();
 
     interface Game {
       fen: string;
@@ -48,30 +48,29 @@ export default function Home() {
       isMyTurn: boolean;
       color: string;
     }
+    console.log(allGames);
 
     allGames.forEach((game: Game) => {
-      const nextMove: any = bestNextMoveIterative(game.fen, 200, game.color);
-      const fen = game.fen;
+      const nextMove: string | null = bestNextMoveIterative(
+        game.fen,
+        200,
+        game.color
+      );
 
-      if (game.isMyTurn) {
-        console.log("making a move", game);
-        makeAMove(game.fullId, nextMove).then((res) => {
-          setTimeout(() => {
-            getMyGames().then((games) => {
-              setActiveGames(games);
-            });
-          }, 1000);
-        });
+      if (nextMove === null) {
+        console.log("no legal moves");
+        return;
+      }
+      if (game.isMyTurn && allGames.length > 0) {
+        makeAMove(game.fullId, nextMove);
       }
     });
-
-    getMyGames().then((games) => {
-      setActiveGames(games);
-    });
-
-    return;
   }
 
+  const myActiveGames = async () => {
+    const games = await getMyGames();
+    return games["nowPlaying"];
+  };
   return (
     <>
       <Head>
@@ -118,10 +117,11 @@ export default function Home() {
           </button>
           <button
             onClick={() => {
-              getMyGames().then((games) => {
-                setActiveGames(games);
-                console.log(games);
-              });
+              setInterval(() => {
+                getMyGames().then((games) => {
+                  setActiveGames(games["nowPlaying"]);
+                });
+              }, 1000);
             }}
           >
             Get My Active Games
@@ -129,6 +129,9 @@ export default function Home() {
           <button
             onClick={() => {
               evaluatePosition();
+              setInterval(() => {
+                evaluatePosition();
+              }, 1000);
             }}
           >
             Get Legal Moves

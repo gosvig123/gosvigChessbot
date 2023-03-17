@@ -1,5 +1,7 @@
 /** @format */
+import { env } from "process";
 import { Challenge } from "../types";
+
 export const getListOfBots = async () => {
   try {
     const listOfBots = await fetch("https://lichess.org/api/bot/online", {
@@ -101,8 +103,6 @@ export const streamOfGameEvents = async (): Promise<any> => {
       headers: {
         Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
         "Content-Type": "application/json",
-
-        cors: "no-cors",
       },
     });
 
