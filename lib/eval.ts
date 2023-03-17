@@ -1,5 +1,7 @@
 /** @format */
 
+import { env } from "process";
+
 import * as Chess from "chess.js";
 
 function evaluateBoard(game: any): number {

@@ -1,13 +1,15 @@
 /** @format */
-import { env } from "process";
 import { Challenge } from "../types";
 
+const token = process.env.NEXT_PUBLIC_LICHESS_TOKEN;
 export const getListOfBots = async () => {
+  console.log(token);
+
   try {
     const listOfBots = await fetch("https://lichess.org/api/bot/online", {
       method: "GET",
       headers: {
-        Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((res) => res.text()) // Get response text instead of JSON
@@ -25,7 +27,7 @@ export const RequestChallenge = async () => {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           rated: false,
@@ -63,7 +65,7 @@ export const getMyAccount = async () => {
     const myAccount = await fetch("https://lichess.org/api/account", {
       method: "GET",
       headers: {
-        Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     })
@@ -82,7 +84,7 @@ export const getMyGames = async () => {
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       }
@@ -101,7 +103,7 @@ export const streamOfGameEvents = async (): Promise<any> => {
     const response = await fetch("https://lichess.org/api/stream/event", {
       method: "GET",
       headers: {
-        Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+        Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
@@ -140,7 +142,7 @@ export const makeAMove = async (gameId: string, move: string) => {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+          Authorization: `Bearer ${token}`,
         },
       }
     )
@@ -159,7 +161,7 @@ export const streamOfSpecificGame = async (gameId: string) => {
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+          Authorization: `Bearer ${token}`,
         },
       }
     )
@@ -178,7 +180,7 @@ export const acceptChallenge = async (challengeId: string) => {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer lip_nLhxdI6qVHlb4Zvnf1L2`,
+          Authorization: `Bearer ${token}`,
         },
       }
     );
