@@ -25,8 +25,8 @@ function getPieceValue(piece: Chess.Piece): number {
     r: 50,
     n: 30,
     b: 30,
-    q: 90,
-    k: 900,
+    q: 100,
+    k: 150,
   };
 
   return piece.color === "w"
@@ -128,7 +128,7 @@ export function bestNextMoveIterative(
   color: string
 ): string | null {
   const startTime = Date.now();
-  let depth = 4;
+  let depth = 8;
   let bestMove: string | null = null;
 
   while (Date.now() - startTime < timeLimit) {

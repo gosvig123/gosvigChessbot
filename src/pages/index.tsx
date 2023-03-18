@@ -37,6 +37,10 @@ export default function Home() {
     challenges.forEach((challenge: Challenge) => {
       return acceptChallenge(challenge.challenge.id);
     });
+
+    setTimeout(() => {
+      checkAndAcceptChallenge();
+    }, 10000);
   };
 
   async function evaluatePosition() {
@@ -48,22 +52,25 @@ export default function Home() {
       isMyTurn: boolean;
       color: string;
     }
-    console.log(allGames);
 
     allGames.forEach((game: Game) => {
-      const nextMove: string | null = bestNextMoveIterative(
-        game.fen,
-        200,
-        game.color
-      );
+      if (game.isMyTurn) {
+        const nextMove: string | null = bestNextMoveIterative(
+          game.fen,
+          150,
+          game.color
+        );
 
-      if (nextMove === null) {
-        console.log("no legal moves");
-        return;
+        if (nextMove === null) {
+          console.log("no legal moves");
+          return;
+        }
+        if (game.isMyTurn && allGames.length > 0) {
+          makeAMove(game.fullId, nextMove);
+        }
       }
-      if (game.isMyTurn && allGames.length > 0) {
-        makeAMove(game.fullId, nextMove);
-      }
+
+      return;
     });
   }
 
