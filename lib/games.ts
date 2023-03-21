@@ -1,4 +1,5 @@
 /** @format */
+import { debug } from "console";
 import { Challenge } from "../types";
 
 const token = process.env.NEXT_PUBLIC_LICHESS_TOKEN;
@@ -98,39 +99,58 @@ export const getMyGames = async () => {
   }
 };
 
+import axios from "axios";
+
 export const streamOfGameEvents = async (): Promise<any> => {
   try {
-    const response = await fetch("https://lichess.org/api/stream/event", {
-      method: "GET",
+    const response = await axios.get("https://lichess.org/api/stream/event", {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
+      responseType: "stream",
     });
 
-    const reader = response.body?.getReader();
     let buffer = "";
     let resArray: any = [];
-    while (true) {
-      const { done, value } = await reader!.read();
-      if (done) break;
-      buffer += new TextDecoder().decode(value!);
-      const lines = buffer.split("\n");
-      buffer = lines.pop()!;
-      for (let i = 0; i < lines.length; i++) {
-        try {
-          const data = JSON.parse(lines[i]);
-          console.log(data);
-          resArray.push(data); // This will only return the first object
-        } catch (error) {
-          console.error(error);
-        }
-      }
 
-      return resArray;
-    }
+    // Wrap the stream processing in a Promise
+    return new Promise((resolve, reject) => {
+      // Process the response stream
+      response.data.on("data", (chunk: Buffer) => {
+        buffer += chunk.toString();
+        const lines = buffer.split("\n");
+        buffer = lines.pop()!;
+
+        for (let i = 0; i < lines.length; i++) {
+          try {
+            if (lines[i] === "") {
+              return resArray;
+            }
+            const data = JSON.parse(lines[i]);
+            resArray.push(data);
+          } catch (error) {
+            console.error(error);
+          }
+        }
+        return resArray;
+      });
+
+      // Handle the end of the stream
+      response.data.on("end", () => {
+        console.log("Stream has ended.");
+        resolve(resArray); // Resolve the Promise with the resArray
+      });
+
+      // Handle any stream errors
+      response.data.on("error", (error: Error) => {
+        console.error("Stream error:", error);
+        reject(error); // Reject the Promise with the error
+      });
+    });
   } catch (error) {
     console.error(error);
+    return Promise.reject(error);
   }
 };
 

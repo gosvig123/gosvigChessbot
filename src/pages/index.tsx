@@ -57,7 +57,7 @@ export default function Home() {
       if (game.isMyTurn) {
         const nextMove: string | null = bestNextMoveIterative(
           game.fen,
-          150,
+          250,
           game.color
         );
 

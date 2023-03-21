@@ -128,7 +128,7 @@ export function bestNextMoveIterative(
   color: string
 ): string | null {
   const startTime = Date.now();
-  let depth = 8;
+  let depth = 4;
   let bestMove: string | null = null;
 
   while (Date.now() - startTime < timeLimit) {
