@@ -109,6 +109,7 @@ export const streamOfGameEvents = async (): Promise<any> => {
         "Content-Type": "application/json",
       },
       responseType: "stream",
+      timeout: 3500,
     });
 
     let buffer = "";

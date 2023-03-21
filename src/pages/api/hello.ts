@@ -38,7 +38,7 @@ export default async function handler(
     console.log(err);
   }
   setTimeout(() => {
-    fetch("https://gosvig-chessbot.vercel.app/api/hello");
+    fetch("http://localhost:3000/api/hello");
     console.log("hello");
   }, 10000);
 }
