@@ -20,10 +20,9 @@ import { type } from "os";
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
-  const [activeGames, setActiveGames] = useState<any>([]);
-
   const checkAndAcceptChallenge = async () => {
-    const gameEventsToCheck = await streamOfGameEvents();
+    const gameEventsToCheck: any = await streamOfGameEvents();
+    console.log(gameEventsToCheck);
     interface Challenge {
       type: string;
       challenge: {
@@ -72,6 +71,9 @@ export default function Home() {
 
       return;
     });
+    setTimeout(() => {
+      evaluatePosition();
+    }, 10000);
   }
 
   const myActiveGames = async () => {
@@ -122,23 +124,10 @@ export default function Home() {
           <button onClick={() => makeAMove("cgkfTWHS", "e2e4")}>
             make a move
           </button>
-          <button
-            onClick={() => {
-              setInterval(() => {
-                getMyGames().then((games) => {
-                  setActiveGames(games["nowPlaying"]);
-                });
-              }, 1000);
-            }}
-          >
-            Get My Active Games
-          </button>
+          <button>Get My Active Games</button>
           <button
             onClick={() => {
               evaluatePosition();
-              setInterval(() => {
-                evaluatePosition();
-              }, 1000);
             }}
           >
             Get Legal Moves
