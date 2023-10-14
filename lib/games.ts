@@ -1,18 +1,21 @@
 /** @format */
-import { debug } from "console";
-import { Challenge } from "../types";
+import { debug } from 'console';
+import { Challenge } from '../types';
 
 const token = process.env.NEXT_PUBLIC_LICHESS_TOKEN;
 export const getListOfBots = async () => {
   console.log(token);
 
   try {
-    const listOfBots = await fetch("https://lichess.org/api/bot/online", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    const listOfBots = await fetch(
+      'https://lichess.org/api/bot/online',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
       .then((res) => res.text()) // Get response text instead of JSON
       .then((data) => data);
     return console.log(listOfBots);
@@ -24,9 +27,9 @@ export const getListOfBots = async () => {
 export const RequestChallenge = async () => {
   try {
     const myAccount = await fetch(
-      "https://lichess.org/api/challenge/actual_magnus",
+      'https://lichess.org/api/challenge/actual_magnus',
       {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -34,19 +37,19 @@ export const RequestChallenge = async () => {
           rated: false,
           clockLimit: 300,
           clockIncrement: 0,
-          color: "white",
-          variant: "standard",
+          color: 'white',
+          variant: 'standard',
           days: 1,
           acceptByToken: false,
-          challengerColor: "white",
-          challengerVariant: "standard",
+          challengerColor: 'white',
+          challengerVariant: 'standard',
           challengerClockLimit: 300,
           challengerClockIncrement: 0,
           challengerDays: 1,
           challengerRated: false,
           challengerAcceptByToken: false,
-          challengerId: "actual_magnus",
-          challengerName: "actual_magnus",
+          challengerId: 'actual_magnus',
+          challengerName: 'actual_magnus',
           challengerRating: 0,
           challengerRatingDiff: 0,
           keepAlive: true,
@@ -63,11 +66,11 @@ export const RequestChallenge = async () => {
 
 export const getMyAccount = async () => {
   try {
-    const myAccount = await fetch("https://lichess.org/api/account", {
-      method: "GET",
+    const myAccount = await fetch('https://lichess.org/api/account', {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
     })
       .then((res) => res.json())
@@ -81,12 +84,12 @@ export const getMyAccount = async () => {
 export const getMyGames = async () => {
   try {
     const myGames: any = await fetch(
-      "https://lichess.org/api/account/playing",
+      'https://lichess.org/api/account/playing',
       {
-        method: "GET",
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
       }
     )
@@ -99,26 +102,29 @@ export const getMyGames = async () => {
   }
 };
 
-import axios from "axios";
+import axios from 'axios';
 
 export const streamOfGameEvents = async (): Promise<any> => {
   try {
-    const response = await fetch("https://lichess.org/api/stream/event", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
+    const response = await fetch(
+      'https://lichess.org/api/stream/event',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
     const reader = response.body?.getReader();
-    let buffer = "";
+    let buffer = '';
     let resArray: any = [];
     while (true) {
       const { done, value } = await reader!.read();
       if (done) break;
       buffer += new TextDecoder().decode(value!);
-      const lines = buffer.split("\n");
+      const lines = buffer.split('\n');
       buffer = lines.pop()!;
       for (let i = 0; i < lines.length; i++) {
         try {
@@ -139,11 +145,11 @@ export const streamOfGameEvents = async (): Promise<any> => {
 
 export const makeAMove = async (gameId: string, move: string) => {
   try {
-    console.log(gameId, move);
+    console.log(gameId, move, 's');
     const myMove = await fetch(
       `https://lichess.org/api/bot/game/${gameId}/move/${move}`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -162,7 +168,7 @@ export const streamOfSpecificGame = async (gameId: string) => {
     const myGame = await fetch(
       `https://lichess.org/api/bot/game/stream/${gameId}`,
       {
-        method: "GET",
+        method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -181,7 +187,7 @@ export const acceptChallenge = async (challengeId: string) => {
     const challengeAccepted = await fetch(
       `https://lichess.org/api/challenge/${challengeId}/accept`,
       {
-        method: "POST",
+        method: 'POST',
         headers: {
           Authorization: `Bearer ${token}`,
         },

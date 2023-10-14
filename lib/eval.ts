@@ -1,8 +1,8 @@
 /** @format */
 
-import { env } from "process";
+import { env } from 'process';
 
-import * as Chess from "chess.js";
+import * as Chess from 'chess.js';
 
 function evaluateBoard(game: any): number {
   const board = game.board();
@@ -16,7 +16,7 @@ function evaluateBoard(game: any): number {
     }
   }
 
-  return game.turn() === "w" ? score : -score;
+  return game.turn() === 'w' ? score : -score;
 }
 
 function getPieceValue(piece: Chess.Piece): number {
@@ -29,7 +29,7 @@ function getPieceValue(piece: Chess.Piece): number {
     k: 150,
   };
 
-  return piece.color === "w"
+  return piece.color === 'w'
     ? pieceValues[piece.type]
     : -pieceValues[piece.type];
 }
@@ -88,7 +88,7 @@ function bestNextMove(
   const game = new Chess.Chess(fen);
   let bestMove: any | null = null;
   let bestValue = -Infinity;
-  let maximizingPlayer = color === "white" ? true : false;
+  let maximizingPlayer = color === 'white' ? true : false;
   const legalMoves = game.moves();
   let alpha = -Infinity;
   let beta = Infinity;
